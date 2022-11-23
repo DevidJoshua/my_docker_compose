@@ -1,0 +1,12 @@
+# docker-compose.yml
+version: '3.1'
+services:
+  db:
+    image: postgres
+    #running every docker start
+    restart: always
+    environment:
+      POSTGRES_USER: deyo
+      POSTGRES_PASSWORD: root123#
+    volumes:
+       - /Users/rayakurayasem/Dejo/my-workspace/database/psql:/var/lib/postgresql/data
