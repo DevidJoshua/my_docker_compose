@@ -1,5 +1,6 @@
 # docker-compose.yml
-version: '3.1'
+version: '3.8'
+name: postgresql_local
 services:
   db:
     image: postgres
@@ -8,5 +9,8 @@ services:
     environment:
       POSTGRES_USER: deyo
       POSTGRES_PASSWORD: root123#
+    ports:
+      - '5432:5432'
     volumes:
-       - /Users/rayakurayasem/Dejo/my-workspace/database/psql:/var/lib/postgresql/data
+       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/var/lib/postgresql/data
+       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/backups:/var/backups
