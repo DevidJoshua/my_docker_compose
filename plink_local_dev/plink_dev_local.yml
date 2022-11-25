@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: deyo
       POSTGRES_PASSWORD: root123#
     ports:
-      - '5432:5432'
+      - '127.0.0.1:5432:5432'
     volumes:
        - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/var/lib/postgresql/data
        - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/backups:/var/backups
@@ -21,9 +21,9 @@ services:
     env_file:
       - ../envs/env-datarepo
     ports:
-      - '8684:8684'
+      - '127.0.0.1:8080:8080'
   discovery:
     image: discovery
     restart: always
     ports:
-      - '8681:8681'
+      - '127.0.0.1:8681:8681'
