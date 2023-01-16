@@ -1,0 +1,45 @@
+# orkestrate 2 java projects and 1 db server
+# docker-compose.yml
+version: '3.8'
+name: local_plink_development
+services:
+  db:
+    image: postgres
+    #running every docker start
+    restart: always
+    environment:
+      POSTGRES_USER: deyo
+      POSTGRES_PASSWORD: root123#
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/var/lib/postgresql/data
+       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/backups:/var/backups
+  redis:
+    image: redis
+    volumes:
+      - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/bitnami/redis/data
+    environment:
+      - 'REDIS_PASSWORD=prismalink'
+  zookeeper:
+    image: zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - 32181:2181
+  kafka:
+    image: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - 29092:29092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
