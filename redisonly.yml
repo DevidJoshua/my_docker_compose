@@ -1,0 +1,14 @@
+# docker-compose.yml
+version: '3.8'
+name: redis_only
+services:
+   redis:
+    image: redis
+    #with command
+    command: redis-server --requirepass prismalink
+    volumes:
+      - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/bitnami/redis/data
+    environment:
+      - 'REDIS_PASSWORD=prismalink'
+    ports:
+      - '127.0.0.1:6379:6379'

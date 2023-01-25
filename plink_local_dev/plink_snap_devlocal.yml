@@ -5,47 +5,63 @@ name: local_plink_development
 services:
   db:
     image: postgres
-    #running every docker start
     restart: always
     environment:
       POSTGRES_USER: deyo
       POSTGRES_PASSWORD: root123#
+    # networks:
+    #   - backend
     networks:
-      - backend
+      - spring-cloud-network
     ports:
       - '127.0.0.1:5432:5432'
     volumes:
        - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/var/lib/postgresql/data
        - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/backups:/var/backups
+
   discovery:
     image: discovery
     restart: always
     env_file:
       - ../envs/env-discovery
+    # networks:
+    #   backend:
+    #     ipv4_address: 10.3.0.2
     networks:
-      - backend
+      - spring-cloud-network
     ports:
       - '127.0.0.1:8681:8681'
     volumes:
       - /Users/rayakurayasem/Dejo/my-workspace/docker_workspace/docker_data/log/discovery:/usr/apps/log
+
   datarepo:
     image: datarepo
     restart: always
     env_file:
       - ../envs/env-datarepo
     networks:
-      - backend
+      - spring-cloud-network
+    # networks:
+    #   backend:
+    #      ipv4_address: 10.3.0.20
     ports:
       - '127.0.0.1:8080:8080'
     links:
-      - discovery
       - db
     volumes:
       - /Users/rayakurayasem/Dejo/my-workspace/docker_workspace/docker_data/log/datarepo:/usr/apps/log
-  
+
 networks:
-  backend:
-    driver: bridge
+  spring-cloud-network:
+    driver: overlay
+    attachable: true
+  # backend:
+  #   ipam:
+  #     driver: default
+  #     config:
+  #       - subnet: 10.3.0.0/16
+  #         gateway: 10.3.0.1
+
   # redis:
   #   image: redis
   #   #with command
