@@ -1,6 +1,5 @@
 # docker-compose.yml
 version: '3.8'
-name: postgresql_local
 services:
   db:
     image: postgres
@@ -12,5 +11,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/var/lib/postgresql/data
-       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/backups:/var/backups
+       - /d/13. Dev Local/persistance_data/postgresql/data:/var/lib/postgresql/data
+       - /d/13. Dev Local/persistance_data/postgresql/backups:/var/backups
+
+       

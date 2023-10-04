@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_USER: ${MARIADB_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+    restart: always
+    volumes:
+     - ${PERSIST_STORAGE_PATH_URL}/mariadb/data:/var/lib/mysql
+     - ${PERSIST_STORAGE_PATH_URL}/mariadb/backups:/var/backups
+     - ${PERSIST_STORAGE_PATH_URL}/mariadb/config:/etc/mysql

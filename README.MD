@@ -1,8 +1,20 @@
+## Commands
+```
+    docker-compose -f postgresql.yml up -d
+```
+**Running with env file**
+```
+    docker-compose --env-file windows.environment -f standalone/mariadb.yml down
+```
 
-# Commands
-`docker-compose -f postgresql.yml up -d`
-
-# Setup
-## Postgresql
+## Setup
+### Postgresql
 - **Restore**: `pg_restore -U deyo -d plink_local < /var/backups/dump-PLINK9-202211212146` run in container `docker exec -it [container name] bash`
- 
+- **Backup**: `pg_restore -U deyo -d PLINK3 < /var/backups/PLINK3-2023-08-06.dump`
+
+# Mariadb
+## Enter the shell
+```
+    > su root
+    > mariadb -u deyo -p
+```
