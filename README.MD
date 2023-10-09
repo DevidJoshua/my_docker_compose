@@ -9,8 +9,16 @@
 
 ## Setup
 ### Postgresql
-- **Restore**: `pg_restore -U deyo -d plink_local < /var/backups/dump-PLINK9-202211212146` run in container `docker exec -it [container name] bash`
-- **Backup**: `pg_restore -U deyo -d PLINK3 < /var/backups/PLINK3-2023-08-06.dump`
+**Restore** 
+```
+    pg_restore -U deyo -d plink_local < /var/backups/dump-PLINK9-202211212146` run in container `docker exec -it [container name] bash
+    or
+    psql -U username -d dbname < filename.sql
+```
+**Backup**
+```
+    pg_restore -U deyo -d PLINK3 < /var/backups/PLINK3-2023-08-06.dump
+```
 
 # Mariadb
 ## Enter the shell
