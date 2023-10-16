@@ -8,7 +8,7 @@ services:
     command: redis-server --requirepass prismalink
     restart: always
     volumes:
-      - /d/13. Dev Local/persistance_data/redis:/bitnami/redis/data
+      - ${PERSIST_STORAGE_PATH_URL}/redis:/bitnami/redis/data
     environment:
       - 'REDIS_PASSWORD=prismalink'
     ports:

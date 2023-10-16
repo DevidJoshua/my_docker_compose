@@ -1,6 +1,6 @@
 ## Commands
 ```
-    docker-compose -f postgresql.yml up -d
+    docker-compose --env-file windows.environment -f standalone/postgresql.yml up -d 
 ```
 **Running with env file**
 ```

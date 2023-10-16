@@ -2,7 +2,7 @@
 version: '3.8'
 services:
   db:
-    image: postgres
+    image: bitnami/postgresql:15.4.0
     #running every docker start
     restart: always
     environment:
@@ -11,7 +11,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-       - /d/13. Dev Local/persistance_data/postgresql/data:/var/lib/postgresql/data
-       - /d/13. Dev Local/persistance_data/postgresql/backups:/var/backups
+       - ${PERSIST_STORAGE_PATH_URL}/postgresql/data:/var/lib/postgresql/data
+       - ${PERSIST_STORAGE_PATH_URL}/postgresql/backups:/var/backups
 
        
