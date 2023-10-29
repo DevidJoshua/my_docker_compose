@@ -2,7 +2,7 @@
 version: '3.8'
 services:
   db:
-    image: bitnami/postgresql:15.4.0
+    image: postgres
     #running every docker start
     restart: always
     environment:

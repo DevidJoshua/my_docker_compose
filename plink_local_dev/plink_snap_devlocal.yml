@@ -1,75 +1,35 @@
-# orkestrate 2 java projects and 1 db server
-# docker-compose.yml
+# orkestrate 2 java projects
 version: '3.8'
 name: local_plink_development
 services:
-  db:
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: deyo
-      POSTGRES_PASSWORD: root123#
-    # networks:
-    #   - backend
-    networks:
-      - spring-cloud-network
-    ports:
-      - '127.0.0.1:5432:5432'
-    volumes:
-       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/var/lib/postgresql/data
-       - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/backups:/var/backups
-
   discovery:
     image: discovery
     restart: always
     env_file:
-      - ../envs/env-discovery
-    # networks:
-    #   backend:
-    #     ipv4_address: 10.3.0.2
-    networks:
-      - spring-cloud-network
+      - ../envs/snap_discovery.environment
+    network_mode: host
     ports:
-      - '127.0.0.1:8681:8681'
+      - '127.0.0.1:8485:8080'
     volumes:
-      - /Users/rayakurayasem/Dejo/my-workspace/docker_workspace/docker_data/log/discovery:/usr/apps/log
+      - ${PERSIST_STORAGE_PATH_URL}/log/discovery:/usr/apps/log
 
   datarepo:
     image: datarepo
     restart: always
     env_file:
-      - ../envs/env-datarepo
-    networks:
-      - spring-cloud-network
-    # networks:
-    #   backend:
-    #      ipv4_address: 10.3.0.20
+      - ../envs/snap_datarepo.environment
+    network_mode: host
     ports:
-      - '127.0.0.1:8080:8080'
-    links:
-      - db
+      - '127.0.0.1:8490:8080'
     volumes:
-      - /Users/rayakurayasem/Dejo/my-workspace/docker_workspace/docker_data/log/datarepo:/usr/apps/log
-
-networks:
-  spring-cloud-network:
-    driver: overlay
-    attachable: true
-  
-  # backend:
-  #   ipam:
-  #     driver: default
-  #     config:
-  #       - subnet: 10.3.0.0/16
-  #         gateway: 10.3.0.1
-
-  # redis:
-  #   image: redis
-  #   #with command
-  #   command: redis-server --requirepass prismalink
-  #   volumes:
-  #     - /Users/rayakurayasem/Dejo/my-workspace/database/postgresql/data:/bitnami/redis/data
-  #   environment:
-  #     - 'REDIS_PASSWORD=prismalink'
-  #   ports:
-  #     - '127.0.0.1:6379:6379'
+      - ${PERSIST_STORAGE_PATH_URL}/log/datarepo:/usr/apps/log
+  payment:
+    image: payment
+    restart: always
+    env_file:
+      - ../envs/snap_payment.environment
+    network_mode: host
+    ports:
+      - '127.0.0.1:8081:8080'
+    volumes:
+      - ${PERSIST_STORAGE_PATH_URL}/log/datarepo:/usr/apps/log
