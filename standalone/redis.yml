@@ -5,6 +5,7 @@ services:
    redis:
     image: redis
     #with command
+    network_mode: bridge
     command: redis-server --requirepass prismalink
     restart: always
     volumes:

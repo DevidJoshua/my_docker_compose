@@ -1,6 +1,6 @@
 ## Commands
 ```
-    docker-compose --env-file windows.environment -f standalone/postgresql.yml up -d 
+    docker-compose --env-file envs/windows.environment -f .\plink_local_dev\plink_snap_devlocal.yml down
 ```
 **Running with env file**
 ```

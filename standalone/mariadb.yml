@@ -6,6 +6,7 @@ services:
       MYSQL_ROOT_USER: ${MARIADB_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     restart: always
+    network_mode: bridge
     volumes:
      - ${PERSIST_STORAGE_PATH_URL}/mariadb/data:/var/lib/mysql
      - ${PERSIST_STORAGE_PATH_URL}/mariadb/backups:/var/backups
