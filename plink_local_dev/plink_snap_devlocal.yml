@@ -8,7 +8,7 @@ services:
       - ../envs/snap_discovery.environment
     network_mode: bridge
     ports:
-      - '127.0.0.1:8485:8080'
+      - '127.0.0.1:8485:8485'
     volumes:
       - ${PERSIST_STORAGE_PATH_URL}/log/discovery:/usr/apps/log
 
@@ -19,7 +19,7 @@ services:
       - ../envs/snap_datarepo.environment
     network_mode: bridge
     ports:
-      - '127.0.0.1:8490:8080'
+      - '127.0.0.1:8490:8490'
     volumes:
       - ${PERSIST_STORAGE_PATH_URL}/log/datarepo:/usr/apps/log
     links:
@@ -61,9 +61,10 @@ services:
     environment:
       POSTGRES_USER: deyo
       POSTGRES_PASSWORD: root123#
+      PGPORT: 5433
     network_mode: bridge
     ports:
-      - '127.0.0.1:5432:5432'
+      - '127.0.0.1:5433:5433'
     volumes:
       - ${PERSIST_STORAGE_PATH_URL}/postgresql/data:/var/lib/postgresql/data
       - ${PERSIST_STORAGE_PATH_URL}/postgresql/backups:/var/backups
