@@ -19,7 +19,7 @@ services:
       - ../envs/snap_datarepo.environment
     network_mode: bridge
     ports:
-      - '127.0.0.1:8490:8490'
+      - '127.0.0.1:8490:8581'
     volumes:
       - ${PERSIST_STORAGE_PATH_URL}/log/datarepo:/usr/apps/log
     links:
@@ -27,21 +27,21 @@ services:
       - discovery
       - redis
 
-  payment:
-    image: payment
-    restart: always
-    env_file:
-      - ../envs/snap_payment.environment
-    network_mode: bridge
-    ports:
-      - '127.0.0.1:8081:8080'
-    volumes:
-      - ${PERSIST_STORAGE_PATH_URL}/log/datarepo:/usr/apps/log
-    links:
-      - db
-      - discovery
-      - redis
-      - datarepo
+  # payment:
+  #   image: payment
+  #   restart: always
+  #   env_file:
+  #     - ../envs/snap_payment.environment
+  #   network_mode: bridge
+  #   ports:
+  #     - '127.0.0.1:8081:8080'
+  #   volumes:
+  #     - ${PERSIST_STORAGE_PATH_URL}/log/datarepo:/usr/apps/log
+  #   links:
+  #     - db
+  #     - discovery
+  #     - redis
+  #     - datarepo
 
   redis:
     image: redis
