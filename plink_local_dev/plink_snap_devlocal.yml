@@ -19,7 +19,7 @@ services:
       - ../envs/snap_datarepo.environment
     network_mode: bridge
     ports:
-      - '127.0.0.1:8490:8581'
+      - '127.0.0.1:8490:8080'
     volumes:
       - ${PERSIST_STORAGE_PATH_URL}/log/datarepo:/usr/apps/log
     links:
