@@ -1,6 +1,10 @@
 ## Commands
 ```
     docker-compose --env-file envs/windows.environment -f .\plink_local_dev\plink_snap_devlocal.yml down
+    
+    deploy docker swarm with single env:
+     
+    env $(cat envs/local_plink.env | grep ^[A-Z] | xargs) docker stack deploy --compose-file plink_local_dev/plink_local_payment_ecosystem.yml plink
 ```
 **Running with env file**
 ```
