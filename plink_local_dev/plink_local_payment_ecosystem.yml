@@ -67,7 +67,7 @@ services:
       - EUREKA_ZONE=${EUREKA_ZONE}
       - TZ=${TZ}
   datarepo:
-    image: prismalinkdev/datarepo:develop-e7bf86f
+    image: prismalinkdev/datarepo:develop-6670273
     networks:
       - spring-cloud-network
     volumes:
