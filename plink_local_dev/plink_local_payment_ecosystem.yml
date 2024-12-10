@@ -19,6 +19,7 @@ services:
     ports:
       - 9092:9092
     environment:
+      KAFKA_HOSTNAME: docker.for.win.localhost
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper-1:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://${APPLICATION_SERVERIP}:29092
@@ -47,6 +48,7 @@ services:
       - spring-cloud-network
     volumes:
         - ${PERSIST_STORAGE_PATH_URL}/data/postgresql:/bitnami/postgresql
+        - ${PERSIST_STORAGE_PATH_URL}/data/postgresql/config:/opt/bitnami/postgresql/conf
     environment:
       - POSTGRESQL_USERNAME_CONNECTION_LIMIT=1500
       - POSTGRESQL_PASSWORD=root123
@@ -67,13 +69,13 @@ services:
       - EUREKA_ZONE=${EUREKA_ZONE}
       - TZ=${TZ}
   datarepo:
-    image: prismalinkdev/datarepo:develop-6670273
+    image: prismalinkdev/datarepo:develop-7a3e2cf
     networks:
       - spring-cloud-network
     volumes:
       - ${PERSIST_STORAGE_PATH_URL}/logs/datarepo:/usr/apps/log
     ports:
-      - 8490:8080
+      - 8080:8080
     depends_on:
       - discovery-server
       - postgresql
@@ -255,7 +257,6 @@ services:
       - spring-cloud-network
     volumes:
       - ${PERSIST_STORAGE_PATH_URL}/logs/merchant-notification:/usr/apps/log
-      - /etc/hosts:/etc/hosts
     ports:
       - 8495:8080
     depends_on:
@@ -368,6 +369,21 @@ services:
       - URL_ENV=https://secure5.plink.co.id
       - URL_SUBMITTRX=${URL_SUBMITTRX}
       - VAM_BASE_URL=${VAM_BASE_URL}
+  nginx:
+    image: nginx
+    depends_on:
+      - discovery-server
+      - kafka-1
+      - redis
+    ports:
+      - "10001-10010:10001-10010"
+    volumes:
+      - ${PERSIST_STORAGE_PATH_URL}/data/nginx/conf:/etc/nginx/conf.d
+      - ${PERSIST_STORAGE_PATH_URL}/data/nginx/html:/usr/share/nginx/html
+      - ${PERSIST_STORAGE_PATH_URL}/logs/nginx/logs:/var/log/nginx
+    networks:
+      - spring-cloud-network
+
 networks:
   spring-cloud-network:
     driver: overlay
