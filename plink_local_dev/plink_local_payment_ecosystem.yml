@@ -129,7 +129,7 @@ services:
       - SERVICE_LOGSTASH_HOST=10.6.6.26:5000
       - SERVICE_NAME=apigw-service-${APPLICATION_SERVERIP}
   callback:
-    image: prismalinkdev/callback:master-b87456f
+    image: prismalinkdev/callback:move-cb-f36ec84
     networks:
       - spring-cloud-network
     volumes:
@@ -262,9 +262,10 @@ services:
     depends_on:
       - discovery-server
     environment:
-      - APPLICATION_DATAREPO=001:10.5.5.118-8001,002:10.5.5.118-8002,003:10.5.5.118-8003,004:10.5.5.118-8004
-      - APPLICATION_DEFAULT_DATAREPO=10.5.5.118:8002
-      - APPLICATION_MYDATAREPOCODE=003
+      - APPLICATION_DATAREPO=${APPLICATION_DATAREPO}
+      - APPLICATION_DEFAULT_DATAREPO=${APPLICATION_DEFAULT_DATAREPO}
+      - APPLICATION_MYDATAREPO=${APPLICATION_MYDATAREPO}
+      - APPLICATION_MYDATAREPOCODE=${APPLICATION_MYDATAREPOCODE}
       - KAFKA_HOST=${KAFKA_HOST}
       - KAFKA_TOPIC_1=${KAFKA_TOPIC_1}
       - KAFKA_TOPIC_5=${KAFKA_TOPIC_5}
@@ -304,7 +305,6 @@ services:
       - redis
       - postgresql
     environment:
-      - DOMAIN_NAME=localhost
       - APPLICATION_DATAREPO=${APPLICATION_DATAREPO}
       - APPLICATION_DEFAULT_DATAREPO=${APPLICATION_DEFAULT_DATAREPO}
       - APPLICATION_MYDATAREPO=${APPLICATION_MYDATAREPO}
@@ -315,6 +315,7 @@ services:
       - CIMB_URL_LOGINPAGE=${CIMB_URL_LOGINPAGE}
       - CMB_LOGIN_URL_WRAPPER=${CMB_LOGIN_URL_WRAPPER}
       - DB_SSL_CONFIG=
+      - DOMAIN_NAME=localhost
       - KAFKA_HOST=${KAFKA_HOST}
       - KAFKA_TOPIC_8=${KAFKA_TOPIC_8}
       - MBDD_CONTAINER_PROCESSOR_BASEURL=${MBDD_CONTAINER_PROCESSOR_BASEURL}
@@ -358,8 +359,8 @@ services:
       - QRIS_NOBU_STATIC_PASSWORD=${QRIS_NOBU_STATIC_PASSWORD}
       - QRIS_NOBU_STATIC_SECRET_KEY=${QRIS_NOBU_STATIC_SECRET_KEY}
       - QRIS_NOBU_STATIC_USERNAME=${QRIS_NOBU_STATIC_USERNAME}
-      - REDIS_SESSION_TOKEN_KEY=${REDIS_SESSION_TOKEN_KEY}
       - REDIS_PAYMENTPAGE_SESSION_KEY=${REDIS_PAYMENTPAGE_SESSION_KEY}
+      - REDIS_SESSION_TOKEN_KEY=${REDIS_SESSION_TOKEN_KEY}
       - SPRING_MAIL_HOST=${SPRING_MAIL_HOST}
       - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
       - SPRING_MAIL_PORT=${SPRING_MAIL_PORT}
@@ -383,7 +384,100 @@ services:
       - ${PERSIST_STORAGE_PATH_URL}/logs/nginx/logs:/var/log/nginx
     networks:
       - spring-cloud-network
-
+  backoffice:
+    image: prismalinkdev/prismalink-backoffice:production_v2-eec31cc
+    networks:
+      - spring-cloud-network
+    volumes:
+      - ${PERSIST_STORAGE_PATH_URL}/logs/backoffice:/usr/apps/log
+    ports:
+      - 8496:8080
+    depends_on:
+      - discovery-server
+      - datarepo
+    # deploy:
+    #   placement:
+    #     constraints: [node.hostname == grafana2]
+    environment:
+      - APPLICATION_DATAREPO=${APPLICATION_DATAREPO}
+      - APPLICATION_DEFAULT_DATAREPO=${APPLICATION_DEFAULT_DATAREPO}
+      - APPLICATION_MYDATAREPO=${APPLICATION_MYDATAREPO}
+      - APPLICATION_MYDATAREPOCODE=${APPLICATION_MYDATAREPOCODE}
+      - APPS_BASEURL=https://localhost:8496
+      - BACKOFFICE_CONFIG_DEFAULT_USER_ROLE_ADMIN=42
+      - BACKOFFICE_CONFIG_DEFAULT_USER_ROLE=40
+      - BACKOFFICE_CONFIG_DISBURSE_DATA_SYNC=0 0 0/1 * * *
+      - BACKOFFICE_CONFIG_EMAILROOT=opetstudio@gmail.com
+      - BACKOFFICE_CONFIG_PLTRANSACTIONS_SYNC_SCHEDULER=5000
+      - BACKOFFICE_VOLUME_CHART_FILE_DIRECTORY=/uploads/chart-datasource
+      - BACKOFFICE_VOLUME_FTP_FILE_DIRECTORY=/opt/backoffice/sftp
+      - CIMB_URL_LOGINPAGE=https://octocash.cimbniaga.co.id/api-manager-external/production/direct-debit-web/register/
+      - DB_SSL_CONFIG=
+      - DEFAULT_LATEST_DATE=2024-11-13 21:00:00.000
+      - DISBURSEMENT_DATA_BASEURL=https://apps.plink.co.id
+      - DISBURSEMENT_DATA_PATH=/PrismaGateway/events/disburse/balez
+      - DOMAIN_NAME=localhost
+      - GRAPHQL_PLAYGROUND_ENABLED=false
+      - GRAPHQL_SERVLET_MAPPING=/fmpkcxgwv4zuecddsnk65htcrvnt9ae4jc3h58b4
+      - ID_CO_PRISMALINK_BACKOFFICE_DB_ENV=development
+      - ID_CO_PRISMALINK_OTHER_BACKOFFICE_DB_ENV=development
+      - ID_CO_PRISMALINK_OTHERBACKOFFICEBASEURL=https://dashboard-staging.plink.co.id
+      - ID_CO_PRISMALINK_PASSCODE=ryvjrfzawzj7u58jyjep942vq3e59jj468vrg49w53qtxcnjnmrv257qzxba
+      - KAFKA_HOST=kafka-1:9092
+      - KAFKA_TOPIC_12=pltransactions-update-pltransaction-production
+      - KAFKA_TOPIC_13=pltransactions-create-pltransaction-production
+      - MBDD_CONTAINER_PAYMENT_BASEURL=http://payment:8489
+      - MBDD_CONTAINER_PAYMENT_ENPOINT_INQURYTRX=/integration/transaction/api/inquiry-transaction
+      - MBDD_CONTAINER_PAYMENTPAGE_BASEURL=http://localhost:8493
+      - MBDD_CONTAINER_PROCESSOR_BASEURL=http://10.6.6.28:8494
+      - MBDD_DB_MDO_DB_MDO_SCHEMA=${MBDD_DB_MDO_DB_MDO_SCHEMA}
+      - MBDD_DB_MDO_DB_MDO=${MBDD_DB_MDO_DB_MDO}
+      - MBDD_DB_MDO_HOST=${MBDD_DB_MDO_HOST}
+      - MBDD_DB_MDO_PASS_MDO=${MBDD_DB_MDO_PASS_MDO}
+      - MBDD_DB_MDO_PORT=${MBDD_DB_MDO_PORT}
+      - MBDD_DB_MDO_USER_MDO=${MBDD_DB_MDO_USER_MDO}
+      - MBDD_DB_MIS_DB_DBO=MIS
+      - MBDD_DB_MIS_HOST=10.122.11.25
+      - MBDD_DB_MIS_PASS_DBO=pr1sm@Link
+      - MBDD_DB_MIS_PORT=1433
+      - MBDD_DB_MIS_USER_DBO=sa
+      - MBDD_DB_PLINK_DB_MDO=${MBDD_DB_PLINK_DB_MDO}
+      - MBDD_DB_PLINK_HOST=${MBDD_DB_PLINK_HOST}
+      - MBDD_DB_PLINK_PASS_MDO=${MBDD_DB_PLINK_PASS_MDO}
+      - MBDD_DB_PLINK_PORT=${MBDD_DB_PLINK_PORT}
+      - MBDD_DB_PLINK_USER_MDO=${MBDD_DB_PLINK_USER_MDO}
+      - MBDD_DB_PLINKBO_DB_MDO=PLINK_BO
+      - MBDD_DB_PLINKBO_PASS_MDO=pr1sm@Link
+      - MBDD_DB_PLINKBO_PORT=5432
+      - MBDD_DB_PLINKBO_USER_MDO=postgres
+      - MBDD_DB_PLINKCC_DB_SCHEMA=public
+      - MBDD_DB_PLINKCC_DB=PLINK_CC
+      - MBDD_DB_PLINKCC_HOST=postgresql
+      - MBDD_DB_PLINKCC_PORT=5432
+      - MBDD_EUREKA_SERVER_HOST=discovery-server
+      - MBDD_EUREKA_SERVER_PORT=8080
+      - MBDD_REDIS_HOST=redis
+      - MBDD_REDIS_PASSWORD=prismalink
+      - MBDD_REDIS_PORT=6379
+      - MBDD_SERVER_PORT=8080
+      - MERCHANT_NOTIFICATION_BASEURL=http://10.6.6.25:8495
+      - PLINK_LOG_SERVICE_BACKOFFICE=DEBUG
+      - PLINK_TRANSACTIONINQUIRY_URL=/integration/transaction/api/inquiry-transaction
+      - PROFILE=DEV
+      - REDIS_KLIKPAY_KEY=klikpay
+      - REDIS_PAYMENTPAGE_SESSION_KEY=paymentPageSessionV4
+      - SERVER_ENV=production
+      - SPRING_MAIL_HOST=${SPRING_MAIL_HOST}
+      - SPRING_MAIL_PASSWORD=${SPRING_MAIL_PASSWORD}
+      - SPRING_MAIL_PORT=${SPRING_MAIL_PORT}
+      - SPRING_MAIL_USERNAME=${SPRING_MAIL_USERNAME}
+      - SPRING_MICROSERVICES_DATAREPOMDO_BASEURL=http://10.6.6.18:8680
+      - SPRING_MICROSERVICES_DATAREPOMS_BASEURL=https://mis.plink.co.id
+      - SYNC_APPLICATION_DATAREPO=002:10.6.6.28-8490,003:10.6.6.30-8490,001:10.6.6.25-8490
+      - TZ=Asia/Jakarta
+      - VA_CHECK_STATUS_HOST=https://apps.plink.co.id
+      - VAM_BASE_URL=http://10.122.11.111:80/api/transaction/v2/new_transaction
+      - VOYAGER_ENABLED=false
 networks:
   spring-cloud-network:
     driver: overlay
