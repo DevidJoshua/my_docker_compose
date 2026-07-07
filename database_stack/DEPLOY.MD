@@ -18,14 +18,15 @@
 docker swarm init
 ```
 
-## Quick Deploy
+## Create Stack
 
 ```bash
 # 1. Copy and edit environment variables
 cp .env.example .env
 # Edit .env with secure passwords
 
-# 2. Deploy the stack
+# 2. Export .env variables, then deploy
+export $(grep -v '^#' .env | xargs)
 docker stack deploy -c docker-compose.yml database_stack
 
 # 3. Check deployment status
@@ -169,11 +170,11 @@ Current limits (adjust in `docker-compose.yml`):
 | phpMyAdmin | 256 MB | 128 MB |
 | Qdrant | 512 MB | 256 MB |
 
-## Update Stack
+## Update / Renew Stack
 
 ```bash
 # After editing docker-compose.yml or .env
-docker stack deploy -c docker-compose.yml database_stack
+env $(grep -v '^#' .env | xargs) docker stack deploy -c docker-compose.yml database_stack
 ```
 
 ## Remove Stack
@@ -186,6 +187,14 @@ Volumes will persist. Remove them manually if needed:
 
 ```bash
 docker volume rm database_stack_postgres_data database_stack_mysql_data database_stack_qdrant_data
+```
+
+## Renew Stack (Remove + Create)
+
+```bash
+docker stack rm database_stack
+export $(grep -v '^#' .env | xargs)
+docker stack deploy -c docker-compose.yml database_stack
 ```
 
 ## Troubleshooting
