@@ -53,15 +53,14 @@ docker stack ps database_stack
 | Port | `5432` |
 | User | `${POSTGRES_USER}` (default: `postgres`) |
 | Password | `${POSTGRES_PASSWORD}` |
-| Database | `${POSTGRES_DB}` (default: `postgres`) |
-| Connection string | `postgresql://postgres:changeme_postgres@localhost:5432/postgres` |
+| Database | Defaults to `${POSTGRES_USER}` if not specified |
 
 ```bash
 # CLI
 docker exec -it $(docker ps --filter name=database_stack_postgres -q) psql -U postgres
 
 # Remote (psql)
-psql -h localhost -U postgres -d postgres
+psql -h localhost -U postgres
 
 # Remote (connection string)
 psql "postgresql://postgres:changeme_postgres@localhost:5432/postgres"
@@ -75,7 +74,6 @@ psql "postgresql://postgres:changeme_postgres@localhost:5432/postgres"
 | Port | `3306` |
 | Root user | `root` / `${MYSQL_ROOT_PASSWORD}` |
 | App user | `${MYSQL_USER}` / `${MYSQL_PASSWORD}` |
-| Database | `${MYSQL_DATABASE}` (default: `appdb`) |
 
 ```bash
 # CLI
