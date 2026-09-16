@@ -1,0 +1,69 @@
+version: "3.8"
+
+services:
+  hermes:
+    image: nousresearch/hermes-agent:latest
+    command: ["hermes", "gateway", "run"]
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - HERMES_GATEWAY_URL=http://router:20128/v1   # arahkan Hermes ke 9Router sebagai provider
+    volumes:
+      - hermes_data:/opt/data          # config, sessions, memori, skills Hermes
+    networks:
+      - ai_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+        reservations:
+          cpus: "0.25"
+          memory: 256M
+      placement:
+        constraints:
+          - node.role == worker
+
+  router:
+    image: ghcr.io/decolua/9router:latest
+    environment:
+      - JWT_SECRET=${NINEROUTER_JWT_SECRET}
+      - INITIAL_PASSWORD=${NINEROUTER_INITIAL_PASSWORD}
+      - PORT=20128
+      - DATA_DIR=/app/data
+      - NODE_ENV=production
+    volumes:
+      - router_data:/app/data          # SQLite DB (kredensial provider, token OAuth)
+    ports:
+      - target: 20128
+        published: 20128
+        protocol: tcp
+        mode: host
+    networks:
+      - ai_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 5
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 512M
+      placement:
+        constraints:
+          - node.role == worker
+
+volumes:
+  hermes_data:
+  router_data:
+
+networks:
+  ai_net:
+    driver: overlay
+    attachable: true
