@@ -4,7 +4,8 @@ set -euo pipefail
 # Folder tempat file compose disimpan (default: folder tempat script ini berada)
 DIR="${1:-$(dirname "$(readlink -f "$0")")}"
 
-if ! docker info 2>/dev/null | grep -q "Swarm: active"; then
+SWARM_STATE="$(docker info --format '{{.Swarm.LocalNodeState}}' 2>/dev/null || true)"
+if [ "$SWARM_STATE" != "active" ]; then
   echo "Node ini belum swarm mode. Jalankan: docker swarm init"
   exit 1
 fi
